@@ -2,7 +2,6 @@
   const canvas = document.getElementById("game");
   const ctx = canvas.getContext("2d");
 
-  // ---------- Fullscreen + Crisp Canvas ----------
   function fitCanvas() {
     const dpr = Math.max(1, window.devicePixelRatio || 1);
     canvas.width = window.innerWidth * dpr;
@@ -12,14 +11,12 @@
   window.addEventListener("resize", fitCanvas);
   fitCanvas();
 
-  // ---------- Game State ----------
   let running = false, gameOver = false;
   let lastTime = 0, spawnTimer = 0, score = 0;
   let pipes = [], particles = [];
   const gravity = 0.35, flapPower = -6.5;
   const GROUND_Y = () => window.innerHeight - 60;
 
-  // ---------- LocalStorage Helpers ----------
   function loadLeaderboard() {
     try {
       return JSON.parse(localStorage.getItem("flappy_leaderboard_v2")) || [];
@@ -34,11 +31,9 @@
 
   let leaderboard = loadLeaderboard();
 
-  // Load saved player info (if available)
   let playerName = localStorage.getItem("flappy_player_name") || "";
   let birdColor = localStorage.getItem("flappy_bird_color") || "#ffd54f";
 
-  // ---------- Bird ----------
   const bird = {
     x: 160,
     y: window.innerHeight / 2,
@@ -68,13 +63,11 @@
       ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
       ctx.fill();
 
-      // Eye
       ctx.fillStyle = "#222";
       ctx.beginPath();
       ctx.arc(this.x + 5, this.y - 5, 3, 0, Math.PI * 2);
       ctx.fill();
 
-      // Beak
       ctx.fillStyle = "#ff7043";
       ctx.beginPath();
       ctx.moveTo(this.x + this.r, this.y);
@@ -83,7 +76,6 @@
       ctx.closePath();
       ctx.fill();
 
-      // Wing
       ctx.fillStyle = "rgba(0,0,0,.15)";
       ctx.beginPath();
       ctx.ellipse(this.x - 6, this.y + 4, 8, 5 + Math.sin(Date.now()/120)*2, 0, 0, Math.PI*2);
@@ -91,7 +83,6 @@
     }
   };
 
-  // ---------- Particles ----------
   function spawnParticles(x, y) {
     for (let i = 0; i < 6; i++) {
       particles.push({
@@ -124,7 +115,6 @@
     });
   }
 
-  // ---------- Pipes ----------
   function makePipe() {
     const gap = 160;
     const minTop = 60;
@@ -141,7 +131,6 @@
     };
   }
 
-  // ---------- Input ----------
   function onPress() {
     if (gameOver) { resetGame(); return; }
     bird.flap();
@@ -153,7 +142,6 @@
   });
   canvas.addEventListener("pointerdown", onPress);
 
-  // ---------- Game Flow ----------
   function startGame() {
     if (!playerName) return showStartMenu();
     running = true;
@@ -165,14 +153,12 @@
     running = false;
     gameOver = true;
 
-    // Update leaderboard
     const existing = leaderboard.find(e => e.name === playerName);
     if (!existing || score > existing.score) {
       if (existing) existing.score = score;
       else leaderboard.push({ name: playerName, score });
     }
 
-    // ✅ Sort by score desc, then alphabetically
     leaderboard.sort((a, b) => {
       if (b.score === a.score) {
         return a.name.localeCompare(b.name);
@@ -199,15 +185,13 @@
     document.getElementById("score").textContent = "0";
     showStartMenu();
   }
-
-  // ---------- Collision ----------
+  
   function collides(b, p) {
     if (b.x + b.r < p.x || b.x - b.r > p.x + p.w) return false;
     if (b.y - b.r < p.top || b.y + b.r > p.top + p.gap) return true;
     return false;
   }
 
-  // ---------- Drawing ----------
   function drawBackground() {
     const grd = ctx.createLinearGradient(0, 0, 0, window.innerHeight);
     grd.addColorStop(0, `hsl(${200 + Math.sin(Date.now() / 1000) * 10}, 80%, 70%)`);
@@ -234,8 +218,7 @@
       ctx.fillRect(p.x, p.top + p.gap, p.w, 6);
     });
   }
-
-  // ---------- Update + Render ----------
+  
   function update(dt) {
     if (!running || gameOver) return;
     bird.update();
@@ -283,7 +266,6 @@
     requestAnimationFrame(loop);
   }
 
-  // ---------- UI ----------
   function leaderboardHTML(list) {
     if (!list.length) return "<div>No scores yet!</div>";
     return `<div id="lb">
@@ -346,7 +328,7 @@
     };
   }
 
-  // ---------- Boot ----------
   showStartMenu();
   requestAnimationFrame(loop);
 })();
+
