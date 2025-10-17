@@ -100,11 +100,13 @@ html, body {
 }
 
 #lb .row .name {
-  max-width: 100%;
+  flex: 1;
+  text-align: left;
   white-space: normal;
   word-wrap: break-word;
   word-break: break-word;
   overflow-wrap: break-word;
+  font-weight: 500;
 }
 
 #lb .row:nth-child(1) .name { color: #ffe066; font-weight: 700; }
@@ -118,3 +120,4 @@ html, body {
 #lb .row:nth-child(9) .name { color: #81d4fa; }
 
 #lb .row:nth-child(10) .name { color: #80deea; }
+
