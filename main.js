@@ -171,7 +171,15 @@
       if (existing) existing.score = score;
       else leaderboard.push({ name: playerName, score });
     }
-    leaderboard.sort((a, b) => b.score - a.score);
+
+    // ✅ Sort by score desc, then alphabetically
+    leaderboard.sort((a, b) => {
+      if (b.score === a.score) {
+        return a.name.localeCompare(b.name);
+      }
+      return b.score - a.score;
+    });
+
     leaderboard = leaderboard.slice(0, 5);
     saveLeaderboard(leaderboard);
 
